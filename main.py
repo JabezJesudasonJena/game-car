@@ -1,43 +1,41 @@
 import pygame
 import random
-
-# Initialize Pygame
+import os
 pygame.init()
 
-# Screen settings
 WIDTH, HEIGHT = 1920, 1080
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Car Racing Game")
 
-# Colors
+
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 
-# Load images
+
 player_car = pygame.image.load("player_car.png")
 ai_car = pygame.image.load("ai_car.png")
 road = pygame.image.load("road.png")
 
-# Resize images
-car_width, car_height = 70, 140  # Increased width from 50 to 70
+
+car_width, car_height = 70, 140  
 player_car = pygame.transform.scale(player_car, (car_width, car_height))
 ai_car = pygame.transform.scale(ai_car, (car_width, car_height))
 road = pygame.transform.scale(road, (WIDTH, HEIGHT))
 
-# Initial positions
+
 player_x, player_y = WIDTH // 2 - car_width // 2, HEIGHT - 150
 ai_cars = []
 num_ai_cars = 3
 for _ in range(num_ai_cars):
     ai_cars.append([random.randint(100, WIDTH - 100 - car_width), random.randint(-600, -100)])
 
-# Speeds
+
 player_speed = 5
 ai_speed = 3
 road_speed = 5
 
-# Score
+
 score = 0
 font = pygame.font.Font(None, 36)
 
@@ -47,7 +45,7 @@ def draw_score():
     screen.blit(score_text, (10, 10))
 
 
-# Road scrolling
+
 road_y = 0
 
 
@@ -83,7 +81,7 @@ def game_over_screen():
                     exit()
 
 
-# Game loop
+
 running = True
 clock = pygame.time.Clock()
 while running:
@@ -93,7 +91,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    # Scroll road
+
     road_y += road_speed
     if road_y >= HEIGHT:
         road_y = 0
@@ -101,7 +99,7 @@ while running:
     screen.blit(road, (0, road_y - HEIGHT))
     screen.blit(road, (0, road_y))
 
-    # Player controls
+ 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT] and player_x > 0:
         player_x -= player_speed
@@ -112,17 +110,16 @@ while running:
     if keys[pygame.K_DOWN] and player_y < HEIGHT - car_height:
         player_y += player_speed
 
-    # AI movement
+
     for i in range(len(ai_cars)):
         ai_cars[i][1] += ai_speed
         if ai_cars[i][1] > HEIGHT:
             ai_cars[i] = [random.randint(100, WIDTH - 100 - car_width), random.randint(-600, -100)]
-            score += 1  # Increase score when AI car resets
+            score += 1  
 
-    # Check for collisions
+
     if check_collision():
         if game_over_screen():
-            # Reset game state
             player_x, player_y = WIDTH // 2 - car_width // 2, HEIGHT - 150
             ai_cars = [[random.randint(100, WIDTH - 100 - car_width), random.randint(-600, -100)] for _ in
                        range(num_ai_cars)]
